@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Digital Business Card</title>
+  <title>Digital Calling Card</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -64,7 +64,6 @@
     .social-circle.viber:hover { color: #7360f2; border-color: #7360f2; }
 
     .section-title { font-size: 1.05rem; font-weight: 800; color: var(--text-main); padding: 0 24px; text-align: left; margin-bottom: 12px; }
-
     .schedule-controls { display: flex; align-items: center; gap: 6px; padding: 0 24px; margin-bottom: 14px; }
     .month-dropdown {
       background: #f8fafc; border: 1px solid var(--icon-border); padding: 6px 14px; border-radius: 12px;
@@ -115,17 +114,17 @@
     
     <!-- Hero Banner -->
     <div class="hero-banner">
-      <img id="bannerImg" src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=800&q=80" class="banner-img" alt="Banner">
+      <img id="bannerImg" src="" class="banner-img" alt="Cover">
     </div>
 
     <!-- Profile Header -->
     <div class="profile-header">
       <div class="avatar-wrapper">
-        <img id="avatarImg" src="https://ui-avatars.com/api/?name=User&background=0f172a&color=fff" alt="Avatar" class="avatar-img">
+        <img id="avatarImg" src="" alt="Avatar" class="avatar-img">
       </div>
 
       <h1 class="name" id="fullName">Loading...</h1>
-      <p class="title" id="jobTitle">Please wait</p>
+      <p class="title" id="jobTitle"></p>
 
       <div class="cta-row">
         <button class="btn-dark" id="btnSave"><i class="fa-regular fa-bell"></i> Save Contact</button>
@@ -161,7 +160,7 @@
       <div class="date-pill" onclick="selectDate(this)"><span class="day-number">28</span><span class="day-text">Nov</span></div>
     </div>
 
-    <!-- Gallery -->
+    <!-- Gallery Works -->
     <div class="section-title" style="margin-top: 24px;">Featured Works</div>
     <div class="portfolio-masonry" id="galleryContainer"></div>
 
@@ -181,8 +180,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
   <script>
-    // ⚠️ IPALIT ANG IYONG CURRENT APPS SCRIPT URL SA IBABA
-    const API_URL = "https://script.google.com/macros/s/AKfycbwI2WfF1a-6s2zF5tX6n2h5f4d1e3g7j9k8l/exec"; 
+    // DITO KUKUNIN ANG DATA (Diretso sa data.json mo)
+    const API_URL = "./data.json";
 
     let clientDataGlobal = {};
 
@@ -195,78 +194,59 @@
       return url;
     }
 
-    function applyDataToUI(data) {
-      if (!data || !data.client) return;
-      const client = data.client;
-      clientDataGlobal = client;
+    // Basahin ang sarili mong API (data.json)
+    fetch(API_URL)
+      .then(res => res.json())
+      .then(data => {
+        clientDataGlobal = data;
 
-      document.getElementById('fullName').innerText = client.FullName || 'Your Name';
-      document.getElementById('jobTitle').innerText = client.Title || '';
-      document.title = client.FullName || 'Digital Card';
+        document.getElementById('fullName').innerText = data.FullName;
+        document.getElementById('jobTitle').innerText = data.Title;
+        document.title = data.FullName + " - Calling Card";
 
-      if (client.PhotoURL) document.getElementById('avatarImg').src = cleanDriveUrl(client.PhotoURL);
-      if (client.BannerURL) document.getElementById('bannerImg').src = cleanDriveUrl(client.BannerURL);
+        document.getElementById('avatarImg').src = cleanDriveUrl(data.PhotoURL);
+        document.getElementById('bannerImg').src = cleanDriveUrl(data.BannerURL);
 
-      document.getElementById('emailBtn').href = 'mailto:' + (client.Email || '');
-      document.getElementById('phoneBtn').href = 'tel:' + (client.Phone || '');
+        document.getElementById('emailBtn').href = 'mailto:' + data.Email;
+        document.getElementById('phoneBtn').href = 'tel:' + data.Phone;
 
-      // Fixed Deep Link for Facebook
-      if (client.Facebook) {
-        let fb = client.Facebook.trim();
-        if (!fb.startsWith('http://') && !fb.startsWith('https://')) fb = 'https://' + fb;
-        document.getElementById('fbLink').href = fb;
-      }
-      if (client.Instagram) document.getElementById('igLink').href = client.Instagram;
-      if (client.Telegram) document.getElementById('tgLink').href = client.Telegram;
-      if (client.LinkedIn) document.getElementById('liLink').href = client.LinkedIn;
+        document.getElementById('fbLink').href = data.Facebook;
+        document.getElementById('igLink').href = data.Instagram;
+        document.getElementById('tgLink').href = data.Telegram;
+        document.getElementById('liLink').href = data.LinkedIn;
 
-      const phoneDigits = (client.Phone || '').replace(/[^0-9]/g, '');
-      document.getElementById('waLink').href = 'https://wa.me/' + phoneDigits;
-      document.getElementById('viberLink').href = 'viber://chat?number=' + encodeURIComponent(client.ViberNumber || client.Phone);
+        const cleanWa = data.WhatsAppNumber.replace(/[^0-9]/g, '');
+        document.getElementById('waLink').href = 'https://wa.me/' + cleanWa;
+        document.getElementById('viberLink').href = 'viber://chat?number=' + encodeURIComponent(data.ViberNumber);
 
-      if (data.gallery && data.gallery.length > 0) {
-        const galleryContainer = document.getElementById('galleryContainer');
-        galleryContainer.innerHTML = '';
-        data.gallery.forEach(item => {
+        // Render Gallery
+        const galleryEl = document.getElementById('galleryContainer');
+        galleryEl.innerHTML = '';
+        data.Gallery.forEach(item => {
           const card = document.createElement('a');
           card.className = 'masonry-card';
           card.href = item.link || '#';
           card.target = '_blank';
           card.innerHTML = `<img src="${cleanDriveUrl(item.image)}" alt="${item.title}" loading="lazy">`;
-          galleryContainer.appendChild(card);
+          galleryEl.appendChild(card);
         });
-      }
-    }
-
-    // FAST LOAD CACHE: Agad ilalabas ang dating data para zero delay
-    const cached = localStorage.getItem('carell_nfc_cache');
-    if (cached) {
-      try { applyDataToUI(JSON.parse(cached)); } catch(e){}
-    }
-
-    // Background Fresh Sync
-    if (API_URL && !API_URL.includes("AKfycbwI2WfF1a")) {
-      fetch(API_URL)
-        .then(res => res.json())
-        .then(freshData => {
-          applyDataToUI(freshData);
-          localStorage.setItem('carell_nfc_cache', JSON.stringify(freshData));
-        })
-        .catch(err => console.log('Sync error:', err));
-    }
+      })
+      .catch(err => {
+        console.error("Error loading data.json:", err);
+      });
 
     // 1-Click Save vCard
     document.getElementById('btnSave').addEventListener('click', function() {
       const c = clientDataGlobal;
       const vCard = [
         'BEGIN:VCARD', 'VERSION:3.0',
-        'FN:' + (c.FullName || ''),
-        'ORG:' + (c.Company || ''),
-        'TITLE:' + (c.Title || ''),
-        'TEL;TYPE=CELL,VOICE:' + (c.Phone || ''),
-        'TEL;TYPE=VIBER:' + (c.ViberNumber || c.Phone || ''),
-        'EMAIL;TYPE=WORK,INTERNET:' + (c.Email || ''),
-        'ADR;TYPE=WORK:;;' + (c.Address || '') + ';;;',
+        'FN:' + c.FullName,
+        'ORG:' + c.Company,
+        'TITLE:' + c.Title,
+        'TEL;TYPE=CELL,VOICE:' + c.Phone,
+        'TEL;TYPE=VIBER:' + c.ViberNumber,
+        'EMAIL;TYPE=WORK,INTERNET:' + c.Email,
+        'ADR;TYPE=WORK:;;' + c.Address + ';;;',
         'END:VCARD'
       ].join('\r\n');
 
@@ -274,7 +254,7 @@
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.setAttribute('download', (c.FullName || 'Contact').replace(/[^a-zA-Z0-9]/g, '_') + '.vcf');
+      link.setAttribute('download', c.FullName.replace(/[^a-zA-Z0-9]/g, '_') + '.vcf');
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
