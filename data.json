@@ -4,38 +4,28 @@
   "Company": "Phil. Yousheng Construction Corp",
   "Bio": "Creating timeless visual designs and smart automated web platforms.",
   "Phone": "+639171234567",
-  "Email": "carellpycc@gmail.com",
-  "Address": "Pagkakaisa St. Bancaan Naic Cavite",
+  "Email": "carell@example.com",
+  "Address": "Metro Manila, Philippines",
   
-  "PhotoURL": "https://scontent.fmnl14-2.fna.fbcdn.net/v/t39.30808-6/774651491_122141327631109646_3684731567887295718_n.jpg?stp=dst-jpg_tt6&cstp=mx1024x1024&ctp=s1024x1024&_nc_cat=110&_nc_map=urlgen_bucketless&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeF95RjgtNZ1mENQRSKhjbr1vOh2MF9faN686HYwX19o3j-LxOyZ3EnmdYlhcQspKgmRBodr6zObYB4MuM8xEJVV&_nc_ohc=I7SVtWuHqLYQ7kNvwGnq58L&_nc_oc=AdrP_xq16xwRopCXp5KTmEnj1TQummqFViYfI-SzhNWl9i8cuH7YCUHxea79FaE9Eu8&_nc_zt=23&_nc_ht=scontent.fmnl14-2.fna&_nc_gid=Hm-VoT94cZFiibzc1ZuJNg&_nc_ss=7b2a8&oh=00_AQPqviiXfT7kWaJ5tg06-jU5PPLPRqjT8sshzuEr9fpGAg&oe=6ADE31B1",
-  "BannerURL": "https://scontent.fmnl14-2.fna.fbcdn.net/v/t39.30808-6/774651491_122141327631109646_3684731567887295718_n.jpg?stp=dst-jpg_tt6&cstp=mx1024x1024&ctp=s1024x1024&_nc_cat=110&_nc_map=urlgen_bucketless&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeF95RjgtNZ1mENQRSKhjbr1vOh2MF9faN686HYwX19o3j-LxOyZ3EnmdYlhcQspKgmRBodr6zObYB4MuM8xEJVV&_nc_ohc=I7SVtWuHqLYQ7kNvwGnq58L&_nc_oc=AdrP_xq16xwRopCXp5KTmEnj1TQummqFViYfI-SzhNWl9i8cuH7YCUHxea79FaE9Eu8&_nc_zt=23&_nc_ht=scontent.fmnl14-2.fna&_nc_gid=Hm-VoT94cZFiibzc1ZuJNg&_nc_ss=7b2a8&oh=00_AQPqviiXfT7kWaJ5tg06-jU5PPLPRqjT8sshzuEr9fpGAg&oe=6ADE31B1",
+  "PhotoURL": "profile.jpg",
+  "BannerURL": "banner.jpg",
 
-  "Facebook": "https://facebook.com",
+  "Facebook": "https://www.facebook.com/profile.php?id=61583289405455",
   "Instagram": "https://instagram.com",
   "Telegram": "https://telegram.org",
   "LinkedIn": "https://linkedin.com",
-  "ViberNumber": "+639171234567",
-  "WhatsAppNumber": "+639171234567",
+  "ViberNumber": "+639676287887",
+  "WhatsAppNumber": "+639676287887",
 
   "Gallery": [
     {
-      "title": "Urban Architecture",
-      "image": "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=600&q=80",
+      "title": "My First Project",
+      "image": "work1.jpg",
       "link": "https://google.com"
     },
     {
-      "title": "Cultural Portraits",
-      "image": "https://images.unsplash.com/photo-1509099836639-18ba1795216d?auto=format&fit=crop&w=600&q=80",
-      "link": "https://google.com"
-    },
-    {
-      "title": "Studio Dance Art",
-      "image": "https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?auto=format&fit=crop&w=600&q=80",
-      "link": "https://google.com"
-    },
-    {
-      "title": "Nature Landscape",
-      "image": "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=600&q=80",
+      "title": "My Second Project",
+      "image": "work2.jpg",
       "link": "https://google.com"
     }
   ]
