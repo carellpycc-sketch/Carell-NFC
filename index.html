@@ -107,13 +107,6 @@
       font-size: 0.82rem; font-weight: 600; transition: 0.25s ease; opacity: 0; z-index: 100;
     }
     #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
-
-    /* Skeleton Loader */
-    .loading-shimmer {
-      background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-      background-size: 200% 100%; animation: shimmer 1.5s infinite;
-    }
-    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
   </style>
 </head>
 <body>
@@ -122,13 +115,13 @@
     
     <!-- Hero Banner -->
     <div class="hero-banner">
-      <img id="bannerImg" src="" class="banner-img" alt="Banner">
+      <img id="bannerImg" src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=800&q=80" class="banner-img" alt="Banner">
     </div>
 
     <!-- Profile Header -->
     <div class="profile-header">
       <div class="avatar-wrapper">
-        <img id="avatarImg" src="" alt="Avatar" class="avatar-img">
+        <img id="avatarImg" src="https://ui-avatars.com/api/?name=User&background=0f172a&color=fff" alt="Avatar" class="avatar-img">
       </div>
 
       <h1 class="name" id="fullName">Loading...</h1>
@@ -143,12 +136,12 @@
 
     <!-- Social Row -->
     <div class="social-row">
-      <a href="#" id="fbLink" target="_blank" class="social-circle" title="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+      <a href="#" id="fbLink" target="_blank" rel="noopener noreferrer" class="social-circle" title="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
       <a href="#" id="viberLink" class="social-circle viber" title="Viber"><i class="fa-brands fa-viber"></i></a>
-      <a href="#" id="igLink" target="_blank" class="social-circle" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
-      <a href="#" id="tgLink" target="_blank" class="social-circle" title="Telegram"><i class="fa-brands fa-telegram"></i></a>
-      <a href="#" id="liLink" target="_blank" class="social-circle" title="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
-      <a href="#" id="waLink" target="_blank" class="social-circle" title="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+      <a href="#" id="igLink" target="_blank" rel="noopener noreferrer" class="social-circle" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
+      <a href="#" id="tgLink" target="_blank" rel="noopener noreferrer" class="social-circle" title="Telegram"><i class="fa-brands fa-telegram"></i></a>
+      <a href="#" id="liLink" target="_blank" rel="noopener noreferrer" class="social-circle" title="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+      <a href="#" id="waLink" target="_blank" rel="noopener noreferrer" class="social-circle" title="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
     </div>
 
     <!-- Schedule -->
@@ -188,8 +181,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
   <script>
-    // ⬇️ IPALIT DITO ANG APPS SCRIPT URL MO MULA SA STEP 1 ⬇️
-    const API_URL = "https://script.googleusercontent.com/macros/echo?user_content_key=AUkAhnTEIJf4kTtNutSNwwXEr8soEmEnyKD-GS4MkKC8P_7_P3PAkwEMhOUvRGj3jYy8YHrmbVWybO4Xb7LB1J9bs3wycS4rAeDaR5rS3xnEcsc1vDp62Cj5RM9IHpcNOzqo0HD8d6PAtgjshh-TqRWOo7koxybAlx7USUM1IwmgBvxBymJSfCmamZzjsLiYgVErHS8V3_3WjZXlAj_U_50GmkQgMtkUiFPAJcj8iL35rNHn9eRVeAhInW8FLil23NJdegulDyFDVpr-79z4vH3mhAj0x7zgww&lib=MY86mwfFoG-RefD9iQ-1ygVgnoxqeUaTB";
+    // ⚠️ IPALIT ANG IYONG CURRENT APPS SCRIPT URL SA IBABA
+    const API_URL = "https://script.google.com/macros/s/AKfycbwI2WfF1a-6s2zF5tX6n2h5f4d1e3g7j9k8l/exec"; 
 
     let clientDataGlobal = {};
 
@@ -202,39 +195,36 @@
       return url;
     }
 
-    // Fetch data mula sa Google Sheet
-    fetch(API_URL)
-      .then(res => res.json())
-      .then(data => {
-        const client = data.client;
-        clientDataGlobal = client;
+    function applyDataToUI(data) {
+      if (!data || !data.client) return;
+      const client = data.client;
+      clientDataGlobal = client;
 
-        document.getElementById('fullName').innerText = client.FullName || 'Your Name';
-        document.getElementById('jobTitle').innerText = client.Title || '';
-        document.title = client.FullName || 'Digital Card';
+      document.getElementById('fullName').innerText = client.FullName || 'Your Name';
+      document.getElementById('jobTitle').innerText = client.Title || '';
+      document.title = client.FullName || 'Digital Card';
 
-        // Photos
-        const avatar = cleanDriveUrl(client.PhotoURL) || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(client.FullName || 'User');
-        const banner = cleanDriveUrl(client.BannerURL) || 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=800&q=80';
-        
-        document.getElementById('avatarImg').src = avatar;
-        document.getElementById('bannerImg').src = banner;
+      if (client.PhotoURL) document.getElementById('avatarImg').src = cleanDriveUrl(client.PhotoURL);
+      if (client.BannerURL) document.getElementById('bannerImg').src = cleanDriveUrl(client.BannerURL);
 
-        // CTA Links
-        document.getElementById('emailBtn').href = 'mailto:' + (client.Email || '');
-        document.getElementById('phoneBtn').href = 'tel:' + (client.Phone || '');
+      document.getElementById('emailBtn').href = 'mailto:' + (client.Email || '');
+      document.getElementById('phoneBtn').href = 'tel:' + (client.Phone || '');
 
-        // Social Links
-        if (client.Facebook) document.getElementById('fbLink').href = client.Facebook;
-        if (client.Instagram) document.getElementById('igLink').href = client.Instagram;
-        if (client.Telegram) document.getElementById('tgLink').href = client.Telegram;
-        if (client.LinkedIn) document.getElementById('liLink').href = client.LinkedIn;
-        
-        const phoneDigits = (client.Phone || '').replace(/[^0-9]/g, '');
-        document.getElementById('waLink').href = 'https://wa.me/' + phoneDigits;
-        document.getElementById('viberLink').href = 'viber://chat?number=' + encodeURIComponent(client.ViberNumber || client.Phone);
+      // Fixed Deep Link for Facebook
+      if (client.Facebook) {
+        let fb = client.Facebook.trim();
+        if (!fb.startsWith('http://') && !fb.startsWith('https://')) fb = 'https://' + fb;
+        document.getElementById('fbLink').href = fb;
+      }
+      if (client.Instagram) document.getElementById('igLink').href = client.Instagram;
+      if (client.Telegram) document.getElementById('tgLink').href = client.Telegram;
+      if (client.LinkedIn) document.getElementById('liLink').href = client.LinkedIn;
 
-        // Portfolio Render
+      const phoneDigits = (client.Phone || '').replace(/[^0-9]/g, '');
+      document.getElementById('waLink').href = 'https://wa.me/' + phoneDigits;
+      document.getElementById('viberLink').href = 'viber://chat?number=' + encodeURIComponent(client.ViberNumber || client.Phone);
+
+      if (data.gallery && data.gallery.length > 0) {
         const galleryContainer = document.getElementById('galleryContainer');
         galleryContainer.innerHTML = '';
         data.gallery.forEach(item => {
@@ -242,16 +232,30 @@
           card.className = 'masonry-card';
           card.href = item.link || '#';
           card.target = '_blank';
-          card.innerHTML = `<img src="${cleanDriveUrl(item.image)}" alt="${item.title}">`;
+          card.innerHTML = `<img src="${cleanDriveUrl(item.image)}" alt="${item.title}" loading="lazy">`;
           galleryContainer.appendChild(card);
         });
-      })
-      .catch(err => {
-        console.error(err);
-        document.getElementById('fullName').innerText = 'Welcome';
-      });
+      }
+    }
 
-    // Save vCard
+    // FAST LOAD CACHE: Agad ilalabas ang dating data para zero delay
+    const cached = localStorage.getItem('carell_nfc_cache');
+    if (cached) {
+      try { applyDataToUI(JSON.parse(cached)); } catch(e){}
+    }
+
+    // Background Fresh Sync
+    if (API_URL && !API_URL.includes("AKfycbwI2WfF1a")) {
+      fetch(API_URL)
+        .then(res => res.json())
+        .then(freshData => {
+          applyDataToUI(freshData);
+          localStorage.setItem('carell_nfc_cache', JSON.stringify(freshData));
+        })
+        .catch(err => console.log('Sync error:', err));
+    }
+
+    // 1-Click Save vCard
     document.getElementById('btnSave').addEventListener('click', function() {
       const c = clientDataGlobal;
       const vCard = [
@@ -280,7 +284,7 @@
     function selectDate(el) {
       document.querySelectorAll('.date-pill').forEach(pill => pill.classList.remove('active'));
       el.classList.add('active');
-      showToast('Selected date: ' + el.innerText.replace('\n', ' '));
+      showToast('Selected: ' + el.innerText.replace('\n', ' '));
     }
 
     new QRCode(document.getElementById("qrcode"), {
