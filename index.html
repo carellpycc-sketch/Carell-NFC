@@ -107,7 +107,7 @@
     .qr-footer span { font-size: 0.72rem; color: var(--text-muted); }
     #qrcode { background: #fff; padding: 4px; border-radius: 8px; }
 
-    /* Modern Success Notification Modal */
+    /* Success Notification Modal */
     .modal-overlay {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
@@ -124,10 +124,7 @@
       padding: 20px;
     }
 
-    .modal-overlay.active {
-      opacity: 1;
-      pointer-events: auto;
-    }
+    .modal-overlay.active { opacity: 1; pointer-events: auto; }
 
     .modal-box {
       background: #ffffff;
@@ -141,9 +138,7 @@
       transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
-    .modal-overlay.active .modal-box {
-      transform: scale(1);
-    }
+    .modal-overlay.active .modal-box { transform: scale(1); }
 
     .success-icon-wrap {
       width: 65px;
@@ -156,44 +151,13 @@
       margin: 0 auto 16px;
       color: #16a34a;
       font-size: 1.8rem;
-      animation: popIcon 0.5s ease;
     }
 
-    @keyframes popIcon {
-      0% { transform: scale(0.5); }
-      70% { transform: scale(1.15); }
-      100% { transform: scale(1); }
-    }
-
-    .modal-title {
-      font-size: 1.2rem;
-      font-weight: 800;
-      color: #0f172a;
-      margin-bottom: 6px;
-    }
-
-    .modal-desc {
-      font-size: 0.82rem;
-      color: #64748b;
-      line-height: 1.45;
-      margin-bottom: 20px;
-    }
-
+    .modal-title { font-size: 1.2rem; font-weight: 800; color: #0f172a; margin-bottom: 6px; }
+    .modal-desc { font-size: 0.82rem; color: #64748b; line-height: 1.45; margin-bottom: 20px; }
     .modal-btn-done {
-      background: #0f172a;
-      color: #ffffff;
-      border: none;
-      width: 100%;
-      padding: 12px;
-      border-radius: 18px;
-      font-size: 0.88rem;
-      font-weight: 700;
-      cursor: pointer;
-      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
-    }
-
-    .modal-btn-done:active {
-      transform: scale(0.97);
+      background: #0f172a; color: #ffffff; border: none; width: 100%; padding: 12px;
+      border-radius: 18px; font-size: 0.88rem; font-weight: 700; cursor: pointer;
     }
   </style>
 </head>
@@ -281,6 +245,23 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
   <script>
+    /* =====================================================================
+       MESSENGER / FACEBOOK / INSTAGRAM IN-APP BROWSER BREAKOUT
+       Pinipilit mag-open sa Chrome o Safari kapag galing sa Messenger
+       ===================================================================== */
+    (function breakoutOfInAppBrowser() {
+      const ua = navigator.userAgent || navigator.vendor || window.opera;
+      const isFBApp = (ua.indexOf("FBAN") > -1) || (ua.indexOf("FBAV") > -1) || (ua.indexOf("Messenger") > -1) || (ua.indexOf("Instagram") > -1);
+
+      if (isFBApp) {
+        // Para sa Android: Puwersahing buksan ang Google Chrome app gamit ang Android Intent
+        if (/android/i.test(ua)) {
+          const chromeIntent = "intent://" + window.location.host + window.location.pathname + window.location.search + "#Intent;scheme=https;package=com.android.chrome;end";
+          window.location.replace(chromeIntent);
+        }
+      }
+    })();
+
     // CACHE-BUSTER: Laging binabasa ang pinakabagong data.json
     const API_URL = "./data.json?v=" + new Date().getTime();
 
