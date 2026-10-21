@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Digital Business Card</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root {
+      --bg-color: #f1f5f9;
+      --card-bg: #ffffff;
+      --dark-btn: #0f172a;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --icon-bg: #f8fafc;
+      --icon-border: #e2e8f0;
+      --primary-accent: #0284c7;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+    body { background-color: var(--bg-color); min-height: 100vh; display: flex; justify-content: center; align-items: flex-start; }
+
+    .app-container {
+      width: 100%; max-width: 420px; background: var(--card-bg); min-height: 100vh;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.08); position: relative; overflow: hidden; padding-bottom: 30px;
+    }
+
+    .hero-banner { position: relative; width: 100%; height: 220px; overflow: hidden; background: #0f172a; }
+    .banner-img { width: 100%; height: 100%; object-fit: cover; }
+    .hero-banner::after {
+      content: ''; position: absolute; bottom: -1px; left: 0; right: 0; height: 45px;
+      background: var(--card-bg); border-top-left-radius: 40px; border-top-right-radius: 40px;
+    }
+
+    .profile-header { position: relative; margin-top: -65px; padding: 0 24px; text-align: center; z-index: 10; }
+    .avatar-wrapper {
+      width: 110px; height: 110px; margin: 0 auto 12px; border-radius: 50%; padding: 4px;
+      background: #ffffff; box-shadow: 0 10px 25px rgba(0,0,0,0.12); overflow: hidden;
+    }
+    .avatar-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; background: #e2e8f0; }
+
+    .name { font-size: 1.5rem; font-weight: 800; color: var(--text-main); letter-spacing: -0.5px; }
+    .title { font-size: 0.88rem; font-weight: 500; color: var(--text-muted); margin-top: 2px; }
+
+    .cta-row { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 18px; }
+    .btn-dark {
+      background: var(--dark-btn); color: #ffffff; border: none; padding: 10px 18px;
+      border-radius: 30px; font-size: 0.82rem; font-weight: 600; display: inline-flex;
+      align-items: center; gap: 8px; text-decoration: none; box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15); cursor: pointer;
+    }
+    .btn-dark:active { transform: scale(0.96); }
+
+    .social-row { display: flex; align-items: center; justify-content: center; gap: 10px; margin: 24px 0 26px; flex-wrap: wrap; padding: 0 16px; }
+    .social-circle {
+      width: 44px; height: 44px; border-radius: 50%; background: var(--icon-bg); border: 1px solid var(--icon-border);
+      display: flex; align-items: center; justify-content: center; color: #475569; text-decoration: none; font-size: 1.1rem; transition: all 0.2s;
+    }
+    .social-circle:hover { background: #ffffff; color: #1877f2; border-color: #1877f2; transform: translateY(-2px); }
+    .social-circle.viber:hover { color: #7360f2; border-color: #7360f2; }
+
+    .section-title { font-size: 1.05rem; font-weight: 800; color: var(--text-main); padding: 0 24px; text-align: left; margin-bottom: 12px; }
+
+    .schedule-controls { display: flex; align-items: center; gap: 6px; padding: 0 24px; margin-bottom: 14px; }
+    .month-dropdown {
+      background: #f8fafc; border: 1px solid var(--icon-border); padding: 6px 14px; border-radius: 12px;
+      font-size: 0.78rem; font-weight: 600; color: var(--text-main); display: flex; align-items: center; gap: 8px;
+    }
+    .nav-arrow-btn {
+      width: 32px; height: 32px; border-radius: 10px; background: #f8fafc; border: 1px solid var(--icon-border);
+      display: flex; align-items: center; justify-content: center; color: var(--text-muted); cursor: pointer; font-size: 0.75rem;
+    }
+
+    .date-scroll-list { display: flex; gap: 10px; overflow-x: auto; padding: 0 24px 8px; scrollbar-width: none; }
+    .date-scroll-list::-webkit-scrollbar { display: none; }
+    .date-pill {
+      min-width: 62px; height: 72px; border-radius: 16px; background: #f8fafc; border: 1px solid var(--icon-border);
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; cursor: pointer;
+    }
+    .date-pill .day-number { font-size: 1.05rem; font-weight: 700; color: var(--text-main); }
+    .date-pill .day-text { font-size: 0.7rem; font-weight: 500; color: var(--text-muted); }
+    .date-pill.active { background: var(--dark-btn); border-color: var(--dark-btn); }
+    .date-pill.active .day-number { color: #ffffff; }
+    .date-pill.active .day-text { color: #94a3b8; }
+
+    .portfolio-masonry { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 0 24px; margin-top: 14px; }
+    .masonry-card { border-radius: 20px; overflow: hidden; background: #e2e8f0; display: block; cursor: pointer; text-decoration: none; }
+    .masonry-card:nth-child(odd) { height: 185px; }
+    .masonry-card:nth-child(even) { height: 145px; }
+    .masonry-card img { width: 100%; height: 100%; object-fit: cover; }
+
+    .qr-footer {
+      display: flex; align-items: center; justify-content: space-between; margin: 28px 24px 0;
+      padding: 16px; background: #f8fafc; border-radius: 20px; border: 1px solid var(--icon-border);
+    }
+    .qr-footer p { font-size: 0.8rem; font-weight: 700; color: var(--text-main); }
+    .qr-footer span { font-size: 0.72rem; color: var(--text-muted); }
+    #qrcode { background: #fff; padding: 4px; border-radius: 8px; }
+
+    #toast {
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(100px);
+      background: var(--dark-btn); color: white; padding: 10px 20px; border-radius: 30px;
+      font-size: 0.82rem; font-weight: 600; transition: 0.25s ease; opacity: 0; z-index: 100;
+    }
+    #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+    /* Skeleton Loader */
+    .loading-shimmer {
+      background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+      background-size: 200% 100%; animation: shimmer 1.5s infinite;
+    }
+    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    
+    <!-- Hero Banner -->
+    <div class="hero-banner">
+      <img id="bannerImg" src="" class="banner-img" alt="Banner">
+    </div>
+
+    <!-- Profile Header -->
+    <div class="profile-header">
+      <div class="avatar-wrapper">
+        <img id="avatarImg" src="" alt="Avatar" class="avatar-img">
+      </div>
+
+      <h1 class="name" id="fullName">Loading...</h1>
+      <p class="title" id="jobTitle">Please wait</p>
+
+      <div class="cta-row">
+        <button class="btn-dark" id="btnSave"><i class="fa-regular fa-bell"></i> Save Contact</button>
+        <a href="#" id="emailBtn" class="btn-dark"><i class="fa-regular fa-envelope"></i> Email</a>
+        <a href="#" id="phoneBtn" class="btn-dark"><i class="fa-solid fa-phone"></i> Call</a>
+      </div>
+    </div>
+
+    <!-- Social Row -->
+    <div class="social-row">
+      <a href="#" id="fbLink" target="_blank" class="social-circle" title="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+      <a href="#" id="viberLink" class="social-circle viber" title="Viber"><i class="fa-brands fa-viber"></i></a>
+      <a href="#" id="igLink" target="_blank" class="social-circle" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
+      <a href="#" id="tgLink" target="_blank" class="social-circle" title="Telegram"><i class="fa-brands fa-telegram"></i></a>
+      <a href="#" id="liLink" target="_blank" class="social-circle" title="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+      <a href="#" id="waLink" target="_blank" class="social-circle" title="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+    </div>
+
+    <!-- Schedule -->
+    <div class="section-title">Schedule</div>
+    <div class="schedule-controls">
+      <div class="month-dropdown"><span>November 2024</span><i class="fa-solid fa-chevron-down" style="font-size: 0.65rem;"></i></div>
+      <div style="flex: 1;"></div>
+      <div class="nav-arrow-btn"><i class="fa-solid fa-chevron-left"></i></div>
+      <div class="nav-arrow-btn"><i class="fa-solid fa-chevron-right"></i></div>
+    </div>
+
+    <div class="date-scroll-list">
+      <div class="date-pill active" onclick="selectDate(this)"><span class="day-number">24</span><span class="day-text">Nov</span></div>
+      <div class="date-pill" onclick="selectDate(this)"><span class="day-number">25</span><span class="day-text">Nov</span></div>
+      <div class="date-pill" onclick="selectDate(this)"><span class="day-number">26</span><span class="day-text">Nov</span></div>
+      <div class="date-pill" onclick="selectDate(this)"><span class="day-number">27</span><span class="day-text">Nov</span></div>
+      <div class="date-pill" onclick="selectDate(this)"><span class="day-number">28</span><span class="day-text">Nov</span></div>
+    </div>
+
+    <!-- Gallery -->
+    <div class="section-title" style="margin-top: 24px;">Featured Works</div>
+    <div class="portfolio-masonry" id="galleryContainer"></div>
+
+    <!-- QR Footer -->
+    <div class="qr-footer">
+      <div>
+        <p>Direct NFC Card Link</p>
+        <span>Instant camera scan</span>
+      </div>
+      <div id="qrcode"></div>
+    </div>
+
+  </div>
+
+  <div id="toast">Saved!</div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+  <script>
+    // ⬇️ IPALIT DITO ANG APPS SCRIPT URL MO MULA SA STEP 1 ⬇️
+    const API_URL = "https://script.googleusercontent.com/macros/echo?user_content_key=AUkAhnTEIJf4kTtNutSNwwXEr8soEmEnyKD-GS4MkKC8P_7_P3PAkwEMhOUvRGj3jYy8YHrmbVWybO4Xb7LB1J9bs3wycS4rAeDaR5rS3xnEcsc1vDp62Cj5RM9IHpcNOzqo0HD8d6PAtgjshh-TqRWOo7koxybAlx7USUM1IwmgBvxBymJSfCmamZzjsLiYgVErHS8V3_3WjZXlAj_U_50GmkQgMtkUiFPAJcj8iL35rNHn9eRVeAhInW8FLil23NJdegulDyFDVpr-79z4vH3mhAj0x7zgww&lib=MY86mwfFoG-RefD9iQ-1ygVgnoxqeUaTB";
+
+    let clientDataGlobal = {};
+
+    function cleanDriveUrl(url) {
+      if (!url) return '';
+      if (url.includes('drive.google.com')) {
+        const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/) || url.match(/id=([a-zA-Z0-9_-]+)/);
+        if (match && match[1]) return 'https://drive.google.com/thumbnail?sz=w800&id=' + match[1];
+      }
+      return url;
+    }
+
+    // Fetch data mula sa Google Sheet
+    fetch(API_URL)
+      .then(res => res.json())
+      .then(data => {
+        const client = data.client;
+        clientDataGlobal = client;
+
+        document.getElementById('fullName').innerText = client.FullName || 'Your Name';
+        document.getElementById('jobTitle').innerText = client.Title || '';
+        document.title = client.FullName || 'Digital Card';
+
+        // Photos
+        const avatar = cleanDriveUrl(client.PhotoURL) || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(client.FullName || 'User');
+        const banner = cleanDriveUrl(client.BannerURL) || 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=800&q=80';
+        
+        document.getElementById('avatarImg').src = avatar;
+        document.getElementById('bannerImg').src = banner;
+
+        // CTA Links
+        document.getElementById('emailBtn').href = 'mailto:' + (client.Email || '');
+        document.getElementById('phoneBtn').href = 'tel:' + (client.Phone || '');
+
+        // Social Links
+        if (client.Facebook) document.getElementById('fbLink').href = client.Facebook;
+        if (client.Instagram) document.getElementById('igLink').href = client.Instagram;
+        if (client.Telegram) document.getElementById('tgLink').href = client.Telegram;
+        if (client.LinkedIn) document.getElementById('liLink').href = client.LinkedIn;
+        
+        const phoneDigits = (client.Phone || '').replace(/[^0-9]/g, '');
+        document.getElementById('waLink').href = 'https://wa.me/' + phoneDigits;
+        document.getElementById('viberLink').href = 'viber://chat?number=' + encodeURIComponent(client.ViberNumber || client.Phone);
+
+        // Portfolio Render
+        const galleryContainer = document.getElementById('galleryContainer');
+        galleryContainer.innerHTML = '';
+        data.gallery.forEach(item => {
+          const card = document.createElement('a');
+          card.className = 'masonry-card';
+          card.href = item.link || '#';
+          card.target = '_blank';
+          card.innerHTML = `<img src="${cleanDriveUrl(item.image)}" alt="${item.title}">`;
+          galleryContainer.appendChild(card);
+        });
+      })
+      .catch(err => {
+        console.error(err);
+        document.getElementById('fullName').innerText = 'Welcome';
+      });
+
+    // Save vCard
+    document.getElementById('btnSave').addEventListener('click', function() {
+      const c = clientDataGlobal;
+      const vCard = [
+        'BEGIN:VCARD', 'VERSION:3.0',
+        'FN:' + (c.FullName || ''),
+        'ORG:' + (c.Company || ''),
+        'TITLE:' + (c.Title || ''),
+        'TEL;TYPE=CELL,VOICE:' + (c.Phone || ''),
+        'TEL;TYPE=VIBER:' + (c.ViberNumber || c.Phone || ''),
+        'EMAIL;TYPE=WORK,INTERNET:' + (c.Email || ''),
+        'ADR;TYPE=WORK:;;' + (c.Address || '') + ';;;',
+        'END:VCARD'
+      ].join('\r\n');
+
+      const blob = new Blob([vCard], { type: 'text/vcard;charset=utf-8;' });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', (c.FullName || 'Contact').replace(/[^a-zA-Z0-9]/g, '_') + '.vcf');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      showToast('Contact saved!');
+    });
+
+    function selectDate(el) {
+      document.querySelectorAll('.date-pill').forEach(pill => pill.classList.remove('active'));
+      el.classList.add('active');
+      showToast('Selected date: ' + el.innerText.replace('\n', ' '));
+    }
+
+    new QRCode(document.getElementById("qrcode"), {
+      text: window.location.href,
+      width: 48, height: 48, colorDark: "#0f172a", colorLight: "#ffffff"
+    });
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.innerText = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2000);
+    }
+  </script>
+</body>
+</html>
