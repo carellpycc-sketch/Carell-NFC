@@ -1,0 +1,42 @@
+{
+  "FullName": "Carell",
+  "Title": "Professional Specialist",
+  "Company": "Digital Studio Inc.",
+  "Bio": "Creating timeless visual designs and smart automated web platforms.",
+  "Phone": "+639171234567",
+  "Email": "carell@example.com",
+  "Address": "Metro Manila, Philippines",
+  
+  "PhotoURL": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80",
+  "BannerURL": "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=800&q=80",
+
+  "Facebook": "https://facebook.com",
+  "Instagram": "https://instagram.com",
+  "Telegram": "https://telegram.org",
+  "LinkedIn": "https://linkedin.com",
+  "ViberNumber": "+639171234567",
+  "WhatsAppNumber": "+639171234567",
+
+  "Gallery": [
+    {
+      "title": "Urban Architecture",
+      "image": "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=600&q=80",
+      "link": "https://google.com"
+    },
+    {
+      "title": "Cultural Portraits",
+      "image": "https://images.unsplash.com/photo-1509099836639-18ba1795216d?auto=format&fit=crop&w=600&q=80",
+      "link": "https://google.com"
+    },
+    {
+      "title": "Studio Dance Art",
+      "image": "https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?auto=format&fit=crop&w=600&q=80",
+      "link": "https://google.com"
+    },
+    {
+      "title": "Nature Landscape",
+      "image": "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=600&q=80",
+      "link": "https://google.com"
+    }
+  ]
+}
