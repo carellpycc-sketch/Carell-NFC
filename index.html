@@ -30,6 +30,7 @@
       box-shadow: 0 20px 40px rgba(0,0,0,0.08); position: relative; overflow: hidden; padding-bottom: 30px;
     }
 
+    /* Hero Banner */
     .hero-banner { position: relative; width: 100%; height: 220px; overflow: hidden; background: #0f172a; }
     .banner-img { width: 100%; height: 100%; object-fit: cover; }
     .hero-banner::after {
@@ -37,6 +38,7 @@
       background: var(--card-bg); border-top-left-radius: 40px; border-top-right-radius: 40px;
     }
 
+    /* Profile Header */
     .profile-header { position: relative; margin-top: -65px; padding: 0 24px; text-align: center; z-index: 10; }
     .avatar-wrapper {
       width: 110px; height: 110px; margin: 0 auto 12px; border-radius: 50%; padding: 4px;
@@ -47,6 +49,7 @@
     .name { font-size: 1.5rem; font-weight: 800; color: var(--text-main); letter-spacing: -0.5px; }
     .title { font-size: 0.88rem; font-weight: 500; color: var(--text-muted); margin-top: 2px; }
 
+    /* CTA Buttons */
     .cta-row { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 18px; }
     .btn-dark {
       background: var(--dark-btn); color: #ffffff; border: none; padding: 10px 18px;
@@ -55,14 +58,16 @@
     }
     .btn-dark:active { transform: scale(0.96); }
 
+    /* Social Row */
     .social-row { display: flex; align-items: center; justify-content: center; gap: 10px; margin: 24px 0 26px; flex-wrap: wrap; padding: 0 16px; }
     .social-circle {
       width: 44px; height: 44px; border-radius: 50%; background: var(--icon-bg); border: 1px solid var(--icon-border);
-      display: flex; align-items: center; justify-content: center; color: #475569; text-decoration: none; font-size: 1.1rem; transition: all 0.2s;
+      display: inline-flex; align-items: center; justify-content: center; color: #475569; text-decoration: none; font-size: 1.1rem; transition: all 0.2s;
     }
     .social-circle:hover { background: #ffffff; color: #1877f2; border-color: #1877f2; transform: translateY(-2px); }
     .social-circle.viber:hover { color: #7360f2; border-color: #7360f2; }
 
+    /* Schedule Section */
     .section-title { font-size: 1.05rem; font-weight: 800; color: var(--text-main); padding: 0 24px; text-align: left; margin-bottom: 12px; }
     .schedule-controls { display: flex; align-items: center; gap: 6px; padding: 0 24px; margin-bottom: 14px; }
     .month-dropdown {
@@ -86,12 +91,14 @@
     .date-pill.active .day-number { color: #ffffff; }
     .date-pill.active .day-text { color: #94a3b8; }
 
+    /* Portfolio Masonry */
     .portfolio-masonry { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 0 24px; margin-top: 14px; }
     .masonry-card { border-radius: 20px; overflow: hidden; background: #e2e8f0; display: block; cursor: pointer; text-decoration: none; }
     .masonry-card:nth-child(odd) { height: 185px; }
     .masonry-card:nth-child(even) { height: 145px; }
     .masonry-card img { width: 100%; height: 100%; object-fit: cover; }
 
+    /* QR Footer */
     .qr-footer {
       display: flex; align-items: center; justify-content: space-between; margin: 28px 24px 0;
       padding: 16px; background: #f8fafc; border-radius: 20px; border: 1px solid var(--icon-border);
@@ -133,7 +140,7 @@
       </div>
     </div>
 
-    <!-- Social Row -->
+    <!-- Social Row (Auto hides if empty in data.json) -->
     <div class="social-row">
       <a href="#" id="fbLink" target="_blank" rel="noopener noreferrer" class="social-circle" title="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
       <a href="#" id="viberLink" class="social-circle viber" title="Viber"><i class="fa-brands fa-viber"></i></a>
@@ -160,7 +167,7 @@
       <div class="date-pill" onclick="selectDate(this)"><span class="day-number">28</span><span class="day-text">Nov</span></div>
     </div>
 
-    <!-- Gallery Works -->
+    <!-- Featured Works -->
     <div class="section-title" style="margin-top: 24px;">Featured Works</div>
     <div class="portfolio-masonry" id="galleryContainer"></div>
 
@@ -180,13 +187,15 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
   <script>
-    // DITO KUKUNIN ANG DATA (Diretso sa data.json mo)
-    const API_URL = "./data.json";
+    // CACHE BUSTER: laging bago ang kukunin na data.json
+    const API_URL = "./data.json?v=" + new Date().getTime();
 
     let clientDataGlobal = {};
 
-    function cleanDriveUrl(url) {
+    // Helper: Gumagana sa uploaded file sa GitHub o Google Drive
+    function formatImagePath(url) {
       if (!url) return '';
+      url = url.trim();
       if (url.includes('drive.google.com')) {
         const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/) || url.match(/id=([a-zA-Z0-9_-]+)/);
         if (match && match[1]) return 'https://drive.google.com/thumbnail?sz=w800&id=' + match[1];
@@ -194,45 +203,70 @@
       return url;
     }
 
-    // Basahin ang sarili mong API (data.json)
+    // Function para itago ang icon kapag blangko sa data.json
+    function bindSocialLink(elementId, url) {
+      const el = document.getElementById(elementId);
+      if (url && url.trim() !== "") {
+        el.href = url;
+        el.style.display = "inline-flex";
+      } else {
+        el.style.display = "none";
+      }
+    }
+
+    // Basahin ang sariling API (data.json)
     fetch(API_URL)
       .then(res => res.json())
       .then(data => {
         clientDataGlobal = data;
 
-        document.getElementById('fullName').innerText = data.FullName;
-        document.getElementById('jobTitle').innerText = data.Title;
-        document.title = data.FullName + " - Calling Card";
+        document.getElementById('fullName').innerText = data.FullName || 'Your Name';
+        document.getElementById('jobTitle').innerText = data.Title || '';
+        document.title = (data.FullName || 'Digital Card') + " - Calling Card";
 
-        document.getElementById('avatarImg').src = cleanDriveUrl(data.PhotoURL);
-        document.getElementById('bannerImg').src = cleanDriveUrl(data.BannerURL);
+        // Photos (Uploaded image man o link)
+        document.getElementById('avatarImg').src = formatImagePath(data.PhotoURL);
+        document.getElementById('bannerImg').src = formatImagePath(data.BannerURL);
 
-        document.getElementById('emailBtn').href = 'mailto:' + data.Email;
-        document.getElementById('phoneBtn').href = 'tel:' + data.Phone;
+        // Buttons
+        document.getElementById('emailBtn').href = 'mailto:' + (data.Email || '');
+        document.getElementById('phoneBtn').href = 'tel:' + (data.Phone || '');
 
-        document.getElementById('fbLink').href = data.Facebook;
-        document.getElementById('igLink').href = data.Instagram;
-        document.getElementById('tgLink').href = data.Telegram;
-        document.getElementById('liLink').href = data.LinkedIn;
+        // Social Links (Auto-hide kung empty)
+        bindSocialLink('fbLink', data.Facebook);
+        bindSocialLink('igLink', data.Instagram);
+        bindSocialLink('tgLink', data.Telegram);
+        bindSocialLink('liLink', data.LinkedIn);
 
-        const cleanWa = data.WhatsAppNumber.replace(/[^0-9]/g, '');
-        document.getElementById('waLink').href = 'https://wa.me/' + cleanWa;
-        document.getElementById('viberLink').href = 'viber://chat?number=' + encodeURIComponent(data.ViberNumber);
+        if (data.WhatsAppNumber) {
+          const cleanWa = data.WhatsAppNumber.replace(/[^0-9]/g, '');
+          bindSocialLink('waLink', 'https://wa.me/' + cleanWa);
+        } else {
+          document.getElementById('waLink').style.display = "none";
+        }
+
+        if (data.ViberNumber) {
+          bindSocialLink('viberLink', 'viber://chat?number=' + encodeURIComponent(data.ViberNumber));
+        } else {
+          document.getElementById('viberLink').style.display = "none";
+        }
 
         // Render Gallery
         const galleryEl = document.getElementById('galleryContainer');
         galleryEl.innerHTML = '';
-        data.Gallery.forEach(item => {
-          const card = document.createElement('a');
-          card.className = 'masonry-card';
-          card.href = item.link || '#';
-          card.target = '_blank';
-          card.innerHTML = `<img src="${cleanDriveUrl(item.image)}" alt="${item.title}" loading="lazy">`;
-          galleryEl.appendChild(card);
-        });
+        if (data.Gallery && data.Gallery.length > 0) {
+          data.Gallery.forEach(item => {
+            const card = document.createElement('a');
+            card.className = 'masonry-card';
+            card.href = item.link || '#';
+            card.target = '_blank';
+            card.innerHTML = `<img src="${formatImagePath(item.image)}" alt="${item.title || 'Work'}" loading="lazy">`;
+            galleryEl.appendChild(card);
+          });
+        }
       })
       .catch(err => {
-        console.error("Error loading data.json:", err);
+        console.error("Error reading data.json:", err);
       });
 
     // 1-Click Save vCard
@@ -240,13 +274,13 @@
       const c = clientDataGlobal;
       const vCard = [
         'BEGIN:VCARD', 'VERSION:3.0',
-        'FN:' + c.FullName,
-        'ORG:' + c.Company,
-        'TITLE:' + c.Title,
-        'TEL;TYPE=CELL,VOICE:' + c.Phone,
-        'TEL;TYPE=VIBER:' + c.ViberNumber,
-        'EMAIL;TYPE=WORK,INTERNET:' + c.Email,
-        'ADR;TYPE=WORK:;;' + c.Address + ';;;',
+        'FN:' + (c.FullName || ''),
+        'ORG:' + (c.Company || ''),
+        'TITLE:' + (c.Title || ''),
+        'TEL;TYPE=CELL,VOICE:' + (c.Phone || ''),
+        'TEL;TYPE=VIBER:' + (c.ViberNumber || ''),
+        'EMAIL;TYPE=WORK,INTERNET:' + (c.Email || ''),
+        'ADR;TYPE=WORK:;;' + (c.Address || '') + ';;;',
         'END:VCARD'
       ].join('\r\n');
 
@@ -254,7 +288,7 @@
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.setAttribute('download', c.FullName.replace(/[^a-zA-Z0-9]/g, '_') + '.vcf');
+      link.setAttribute('download', (c.FullName || 'Contact').replace(/[^a-zA-Z0-9]/g, '_') + '.vcf');
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
