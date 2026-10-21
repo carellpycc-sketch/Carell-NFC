@@ -107,12 +107,94 @@
     .qr-footer span { font-size: 0.72rem; color: var(--text-muted); }
     #qrcode { background: #fff; padding: 4px; border-radius: 8px; }
 
-    #toast {
-      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(100px);
-      background: var(--dark-btn); color: white; padding: 10px 20px; border-radius: 30px;
-      font-size: 0.82rem; font-weight: 600; transition: 0.25s ease; opacity: 0; z-index: 100;
+    /* Modern Success Notification Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s ease;
+      padding: 20px;
     }
-    #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-box {
+      background: #ffffff;
+      width: 100%;
+      max-width: 320px;
+      border-radius: 28px;
+      padding: 26px 20px;
+      text-align: center;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      transform: scale(0.9);
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .modal-overlay.active .modal-box {
+      transform: scale(1);
+    }
+
+    .success-icon-wrap {
+      width: 65px;
+      height: 65px;
+      background: #dcfce7;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 16px;
+      color: #16a34a;
+      font-size: 1.8rem;
+      animation: popIcon 0.5s ease;
+    }
+
+    @keyframes popIcon {
+      0% { transform: scale(0.5); }
+      70% { transform: scale(1.15); }
+      100% { transform: scale(1); }
+    }
+
+    .modal-title {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: #0f172a;
+      margin-bottom: 6px;
+    }
+
+    .modal-desc {
+      font-size: 0.82rem;
+      color: #64748b;
+      line-height: 1.45;
+      margin-bottom: 20px;
+    }
+
+    .modal-btn-done {
+      background: #0f172a;
+      color: #ffffff;
+      border: none;
+      width: 100%;
+      padding: 12px;
+      border-radius: 18px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
+    }
+
+    .modal-btn-done:active {
+      transform: scale(0.97);
+    }
   </style>
 </head>
 <body>
@@ -140,7 +222,7 @@
       </div>
     </div>
 
-    <!-- Social Row (Auto hides if empty in data.json) -->
+    <!-- Social Row -->
     <div class="social-row">
       <a href="#" id="fbLink" target="_blank" rel="noopener noreferrer" class="social-circle" title="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
       <a href="#" id="viberLink" class="social-circle viber" title="Viber"><i class="fa-brands fa-viber"></i></a>
@@ -182,17 +264,28 @@
 
   </div>
 
-  <div id="toast">Saved!</div>
+  <!-- Success Notification Modal -->
+  <div class="modal-overlay" id="successModal">
+    <div class="modal-box">
+      <div class="success-icon-wrap">
+        <i class="fa-solid fa-check"></i>
+      </div>
+      <h3 class="modal-title">Contact Downloaded!</h3>
+      <p class="modal-desc">
+        Paki-click ang <b>"Open"</b> o <b>"Save"</b> sa lalabas na prompt ng iyong cellphone para maipasok sa Phonebook.
+      </p>
+      <button class="modal-btn-done" onclick="closeModal()">Done</button>
+    </div>
+  </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
   <script>
-    // CACHE BUSTER: laging bago ang kukunin na data.json
+    // CACHE-BUSTER: Laging binabasa ang pinakabagong data.json
     const API_URL = "./data.json?v=" + new Date().getTime();
 
     let clientDataGlobal = {};
 
-    // Helper: Gumagana sa uploaded file sa GitHub o Google Drive
     function formatImagePath(url) {
       if (!url) return '';
       url = url.trim();
@@ -203,7 +296,6 @@
       return url;
     }
 
-    // Function para itago ang icon kapag blangko sa data.json
     function bindSocialLink(elementId, url) {
       const el = document.getElementById(elementId);
       if (url && url.trim() !== "") {
@@ -214,7 +306,7 @@
       }
     }
 
-    // Basahin ang sariling API (data.json)
+    // Basahin ang sariling data.json
     fetch(API_URL)
       .then(res => res.json())
       .then(data => {
@@ -224,7 +316,7 @@
         document.getElementById('jobTitle').innerText = data.Title || '';
         document.title = (data.FullName || 'Digital Card') + " - Calling Card";
 
-        // Photos (Uploaded image man o link)
+        // Photos (Uploaded man sa GitHub o web link)
         document.getElementById('avatarImg').src = formatImagePath(data.PhotoURL);
         document.getElementById('bannerImg').src = formatImagePath(data.BannerURL);
 
@@ -232,7 +324,7 @@
         document.getElementById('emailBtn').href = 'mailto:' + (data.Email || '');
         document.getElementById('phoneBtn').href = 'tel:' + (data.Phone || '');
 
-        // Social Links (Auto-hide kung empty)
+        // Social Links
         bindSocialLink('fbLink', data.Facebook);
         bindSocialLink('igLink', data.Instagram);
         bindSocialLink('tgLink', data.Telegram);
@@ -269,9 +361,15 @@
         console.error("Error reading data.json:", err);
       });
 
-    // 1-Click Save vCard
+    // 1-Click Save vCard na may Haptic Feedback at Modal Pop-up
     document.getElementById('btnSave').addEventListener('click', function() {
       const c = clientDataGlobal;
+
+      // Haptic Vibration sa cellphone
+      if (navigator.vibrate) {
+        navigator.vibrate([100, 50, 100]);
+      }
+
       const vCard = [
         'BEGIN:VCARD', 'VERSION:3.0',
         'FN:' + (c.FullName || ''),
@@ -292,26 +390,24 @@
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      showToast('Contact saved!');
+
+      // Ipakita ang Animated Modal Popup
+      document.getElementById('successModal').classList.add('active');
     });
+
+    function closeModal() {
+      document.getElementById('successModal').classList.remove('active');
+    }
 
     function selectDate(el) {
       document.querySelectorAll('.date-pill').forEach(pill => pill.classList.remove('active'));
       el.classList.add('active');
-      showToast('Selected: ' + el.innerText.replace('\n', ' '));
     }
 
     new QRCode(document.getElementById("qrcode"), {
       text: window.location.href,
       width: 48, height: 48, colorDark: "#0f172a", colorLight: "#ffffff"
     });
-
-    function showToast(msg) {
-      const toast = document.getElementById('toast');
-      toast.innerText = msg;
-      toast.classList.add('show');
-      setTimeout(() => toast.classList.remove('show'), 2000);
-    }
   </script>
 </body>
 </html>
